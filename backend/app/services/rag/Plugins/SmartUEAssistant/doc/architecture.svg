@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="720" viewBox="0 0 1080 720">
+  <defs>
+    <style><![CDATA[
+      .title{font:700 28px/1.2 "Segoe UI",Arial;fill:#111}
+      .subtitle{font:600 18px/1.2 "Segoe UI",Arial;fill:#333}
+      .text{font:14px/1.4 "Segoe UI",Arial;fill:#444}
+      .box{fill:#fff;stroke:#5b9bd5;stroke-width:2;rx:10}
+      .box2{fill:#fff;stroke:#70ad47;stroke-width:2;rx:10}
+      .box3{fill:#fff;stroke:#ed7d31;stroke-width:2;rx:10}
+      .box4{fill:#fff;stroke:#7f7f7f;stroke-width:2;rx:10}
+      .arrow{fill:none;stroke:#666;stroke-width:2;marker-end:url(#arrow)}
+    ]]></style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#666" />
+    </marker>
+  </defs>
+
+  <text x="40" y="50" class="title">Smart UE Assistant 架构图</text>
+  <text x="40" y="80" class="subtitle">从 UI → 服务 → 上下文 → 工具 的分层解耦</text>
+
+  <!-- UI 层 -->
+  <rect x="40" y="110" width="460" height="160" class="box"/>
+  <text x="60" y="140" class="subtitle">UI 层（Slate）</text>
+  <text x="60" y="170" class="text">SAIAssistantWindow（对话界面、结果展示）</text>
+  <text x="60" y="195" class="text">命令入口：菜单/快捷键（FSmartUEAssistantCommands → Ctrl+Alt+K）</text>
+  <text x="60" y="220" class="text">Nomad Tab：FSmartUEAssistantModule 注册/激活</text>
+
+  <!-- 服务层 -->
+  <rect x="580" y="110" width="460" height="160" class="box2"/>
+  <text x="600" y="140" class="subtitle">服务层（AIService + 设置）</text>
+  <text x="600" y="170" class="text">AIService：OpenAI 兼容 API 调用、流式/非流式</text>
+  <text x="600" y="195" class="text">执行策略：DryRun/确认；bAutoExecuteSafeTools；bSkipConfirmForConsoleCommands</text>
+  <text x="600" y="220" class="text">USmartUEAssistantSettings：BaseURL、APIKey、模型等</text>
+
+  <!-- 上下文层 -->
+  <rect x="40" y="320" width="460" height="140" class="box3"/>
+  <text x="60" y="350" class="subtitle">上下文层（SceneContext）</text>
+  <text x="60" y="380" class="text">SceneContextProvider：收集关卡状态、选择集、项目参数</text>
+  <text x="60" y="405" class="text">FSceneContext：结构化上下文，供推理与工具使用</text>
+
+  <!-- 工具层 -->
+  <rect x="580" y="320" width="460" height="220" class="box4"/>
+  <text x="600" y="350" class="subtitle">工具层（EditorAIToolRegistry + Tools）</text>
+  <text x="600" y="380" class="text">注册表：FEditorAIToolRegistry —— 工具声明、权限与查找</text>
+  <text x="600" y="405" class="text">内置工具：ActorTools / SelectionTools / ViewportTools / LightingTools / SystemTools / QueryTools</text>
+  <text x="600" y="430" class="text">控制台命令：遵守 bSkipConfirmForConsoleCommands 策略</text>
+
+  <!-- 数据流箭头 -->
+  <path d="M500,190 C540,190 560,190 580,190" class="arrow"/> <!-- UI -> 服务 -->
+  <path d="M270,270 C270,300 270,310 270,320" class="arrow"/> <!-- UI -> 上下文 -->
+  <path d="M810,270 C810,300 810,310 810,320" class="arrow"/> <!-- 服务 -> 工具 -->
+  <path d="M500,390 C540,390 560,390 580,390" class="arrow"/> <!-- 上下文 -> 工具 -->
+
+  <!-- 反馈箭头（结果返回 UI） -->
+  <path d="M810,540 C810,600 300,600 300,270" class="arrow"/> <!-- 工具 -> UI (抽象反馈) -->
+
+  <!-- 说明 -->
+  <text x="40" y="580" class="text">说明：图中组件名称与项目代码对应，便于维护与扩展。</text>
+</svg>

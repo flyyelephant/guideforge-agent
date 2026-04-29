@@ -1,0 +1,479 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>deerflow-lite-agent</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --panel: #fffaf1;
+      --ink: #1c1a17;
+      --muted: #6b645a;
+      --line: #d7ccb8;
+      --accent: #285943;
+      --accent-2: #9a6c2f;
+      --code-bg: #f3ede1;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      font-family: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f0eadb 0%, var(--bg) 100%);
+      overflow-x: hidden;
+    }
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.95fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .panel {
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(50, 40, 20, 0.06);
+      overflow: hidden;
+    }
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 48px);
+    }
+    .side-panel {
+      position: sticky;
+      top: 18px;
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+    }
+    h1, h2, h3 { margin: 0 0 12px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 18px; }
+    h3 { font-size: 16px; }
+    p, li, pre, textarea, button, input { font-size: 15px; }
+    .subtitle { color: var(--muted); margin-bottom: 18px; }
+    textarea {
+      width: 100%; min-height: 120px; resize: vertical; padding: 14px;
+      border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink);
+    }
+    button {
+      border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer;
+      background: var(--accent); color: #fff; font-weight: 600;
+    }
+    button.secondary { background: #efe5d3; color: var(--ink); }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .chip {
+      display: inline-block; padding: 6px 10px; border-radius: 999px;
+      background: #efe5d3; color: var(--ink); margin-right: 6px; margin-bottom: 6px;
+      max-width: 100%; overflow-wrap: anywhere;
+    }
+    #conversation {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 12px;
+      min-width: 0;
+    }
+    .message {
+      min-width: 0;
+      max-width: 100%;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .message.user { border-left: 4px solid var(--accent-2); }
+    .message.agent { border-left: 4px solid var(--accent); }
+    .label { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+    .message-content, .preview-content {
+      margin-top: 8px;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .prose {
+      line-height: 1.75;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .prose > *:first-child { margin-top: 0; }
+    .prose h1, .prose h2, .prose h3, .prose h4 {
+      margin: 18px 0 10px;
+      line-height: 1.35;
+    }
+    .prose p, .prose ul, .prose ol { margin: 10px 0; }
+    .prose ul, .prose ol { padding-left: 1.4rem; }
+    .prose li + li { margin-top: 6px; }
+    .prose pre {
+      margin: 12px 0;
+      padding: 12px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .prose code {
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      background: var(--code-bg);
+      padding: 0.15em 0.35em;
+      border-radius: 6px;
+      overflow-wrap: anywhere;
+    }
+    .prose pre code {
+      background: transparent;
+      padding: 0;
+    }
+    .list {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+    .artifact, .ref, .tool-output {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .tool-output pre,
+    .ref pre,
+    .preview pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      overflow-x: auto;
+      margin: 8px 0 0;
+      background: #fbf7ef;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .muted { color: var(--muted); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .actions a { color: var(--accent); text-decoration: none; }
+    .path {
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+    }
+    .preview {
+      max-height: 360px;
+      overflow: auto;
+    }
+    @media (max-width: 980px) {
+      .page { grid-template-columns: 1fr; }
+      .side-panel { position: static; max-height: none; }
+      .main-panel { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="panel main-panel">
+      <h1>deerflow-lite-agent 中文调试台</h1>
+      <p class="subtitle">这是当前 agent 的最小浏览器入口。你可以直接提问，查看回答、路由信息、参考来源，以及生成的交付文件。</p>
+      <div class="label">输入</div>
+      <textarea id="userInput" placeholder="请输入问题，例如：写一个 UE 教程、给我一个方案建议，或者生成 markdown 文档……"></textarea>
+      <div class="row" style="margin-top: 12px;">
+        <button id="sendBtn">发送</button>
+        <button id="clearBtn" class="secondary" type="button">清空界面</button>
+        <span id="statusText" class="muted"></span>
+      </div>
+      <div id="conversation"></div>
+    </section>
+
+    <aside class="panel side-panel">
+      <h2>调试信息</h2>
+      <div id="meta"></div>
+
+      <h3 style="margin-top: 18px;">工具输出</h3>
+      <div id="toolOutputs" class="list"></div>
+
+      <h3 style="margin-top: 18px;">参考来源</h3>
+      <div id="references" class="list"></div>
+
+      <h3 style="margin-top: 18px;">产物文件</h3>
+      <div id="artifacts" class="list"></div>
+
+      <h3 style="margin-top: 18px;">产物预览</h3>
+      <div id="preview" class="artifact preview muted">当前没有选中的文件。</div>
+    </aside>
+  </div>
+
+      <script>
+    const state = {
+      sessionId: localStorage.getItem('deerflow-lite-session') || crypto.randomUUID(),
+    };
+    localStorage.setItem('deerflow-lite-session', state.sessionId);
+
+    const userInput = document.getElementById('userInput');
+    const conversation = document.getElementById('conversation');
+    const meta = document.getElementById('meta');
+    const toolOutputs = document.getElementById('toolOutputs');
+    const references = document.getElementById('references');
+    const artifacts = document.getElementById('artifacts');
+    const preview = document.getElementById('preview');
+    const statusText = document.getElementById('statusText');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function escapeHtml(text) {
+      return String(text || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;');
+    }
+
+    function humanTaskType(taskType) {
+      const mapping = {
+        tutorial_writing: '教程编写',
+        proposal_generation: '方案生成',
+        workflow_support: '流程支持',
+        ue_qa: 'UE 知识问答'
+      };
+      return mapping[taskType] || taskType || '未命中';
+    }
+
+    function humanResponseMode(mode) {
+      const mapping = {
+        direct_answer: '直接回答',
+        structured_chat: '结构化聊天',
+        deliverable_file: '文件交付'
+      };
+      return mapping[mode] || mode || '未判定';
+    }
+
+    function renderRichText(text) {
+      const source = String(text || '');
+      if (!source.trim()) return '<div class="muted">当前没有内容。</div>';
+      const escapedLines = source.split('\n').map(line => escapeHtml(line));
+      const html = [];
+      let paragraph = [];
+      let listBuffer = [];
+      let orderedBuffer = [];
+      let codeBuffer = [];
+      let inCode = false;
+
+      function flushParagraph() {
+        if (!paragraph.length) return;
+        html.push(`<p>${paragraph.join('<br>')}</p>`);
+        paragraph = [];
+      }
+      function flushList() {
+        if (!listBuffer.length) return;
+        html.push(`<ul>${listBuffer.map(item => `<li>${item}</li>`).join('')}</ul>`);
+        listBuffer = [];
+      }
+      function flushOrdered() {
+        if (!orderedBuffer.length) return;
+        html.push(`<ol>${orderedBuffer.map(item => `<li>${item}</li>`).join('')}</ol>`);
+        orderedBuffer = [];
+      }
+      function flushCode() {
+        if (!codeBuffer.length) return;
+        html.push(`<pre><code>${codeBuffer.join('\n')}</code></pre>`);
+        codeBuffer = [];
+      }
+      function flushAll() {
+        flushParagraph();
+        flushList();
+        flushOrdered();
+      }
+
+      for (const line of escapedLines) {
+        if (line.trim().startsWith('```')) {
+          flushAll();
+          if (inCode) {
+            flushCode();
+            inCode = false;
+          } else {
+            inCode = true;
+          }
+          continue;
+        }
+        if (inCode) {
+          codeBuffer.push(line);
+          continue;
+        }
+
+        const heading = line.match(/^(#{1,6})\s+(.*)$/);
+        if (heading) {
+          flushAll();
+          const level = Math.min(4, heading[1].length);
+          html.push(`<h${level}>${heading[2]}</h${level}>`);
+          continue;
+        }
+
+        const bullet = line.match(/^[-*]\s+(.*)$/);
+        if (bullet) {
+          flushParagraph();
+          flushOrdered();
+          listBuffer.push(bullet[1]);
+          continue;
+        }
+
+        const ordered = line.match(/^\d+\.\s+(.*)$/);
+        if (ordered) {
+          flushParagraph();
+          flushList();
+          orderedBuffer.push(ordered[1]);
+          continue;
+        }
+
+        if (!line.trim()) {
+          flushAll();
+          continue;
+        }
+
+        paragraph.push(line);
+      }
+
+      if (inCode) flushCode();
+      flushAll();
+      return html.join('') || `<p>${escapeHtml(source)}</p>`;
+    }
+
+    function pushMessage(role, content) {
+      const div = document.createElement('div');
+      div.className = `message ${role}`;
+      div.innerHTML = `<div class="label">${role === 'user' ? '用户' : 'Agent'}</div><div class="message-content prose">${renderRichText(content)}</div>`;
+      conversation.prepend(div);
+    }
+
+    function renderMeta(data) {
+      const chips = [
+        `<span class="chip">状态：${escapeHtml(data.status)}</span>`,
+        `<span class="chip">任务类型：${escapeHtml(humanTaskType(data.task_type))}</span>`,
+        `<span class="chip">响应模式：${escapeHtml(humanResponseMode(data.response_mode))}</span>`,
+        `<span class="chip">命中工作流：${data.workflow_hit ? '是' : '否'}</span>`,
+      ];
+      if (data.clarification_question) {
+        chips.push('<span class="chip">当前需要澄清</span>');
+      }
+      meta.innerHTML = chips.join(' ');
+    }
+
+    function renderToolOutputs(items) {
+      toolOutputs.innerHTML = items.length ? '' : '<div class="muted">当前回合没有工具输出。</div>';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'tool-output';
+        div.innerHTML = `<pre>${escapeHtml(item)}</pre>`;
+        toolOutputs.appendChild(div);
+      });
+    }
+
+    function renderReferences(items) {
+      references.innerHTML = items.length ? '' : '<div class="muted">当前回合没有可展示的依据来源。</div>';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'ref';
+        div.innerHTML = `
+          <strong>${escapeHtml(item.title || '未命名来源')}</strong>
+          <div class="muted path">${escapeHtml(item.path || '')}</div>
+          <pre>${escapeHtml(item.snippet || '')}</pre>
+        `;
+        references.appendChild(div);
+      });
+    }
+
+    async function previewArtifact(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('预览文件失败');
+      const data = await res.json();
+      preview.innerHTML = `<strong>${escapeHtml(data.name)}</strong><div class="muted path">${escapeHtml(data.path)}</div><div class="preview-content prose">${renderRichText(data.content)}</div>`;
+    }
+
+    function renderArtifacts(items) {
+      artifacts.innerHTML = items.length ? '' : '<div class="muted">当前没有产物文件。</div>';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'artifact';
+        div.innerHTML = `
+          <strong>${escapeHtml(item.name)}</strong>
+          <div class="muted path">${escapeHtml(item.path || '')}</div>
+          <div class="actions" style="margin-top:8px;">
+            <a href="#" data-view="${item.view_url}">查看</a>
+            <a href="${item.download_url}" target="_blank">查看</a>
+          </div>
+        `;
+        div.querySelector('[data-view]').addEventListener('click', async (event) => {
+          event.preventDefault();
+          try {
+            await previewArtifact(item.view_url);
+          } catch (error) {
+            preview.innerHTML = `<div class="muted">${escapeHtml(error.message || '预览失败')}</div>`;
+          }
+        });
+        artifacts.appendChild(div);
+      });
+    }
+
+    async function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      statusText.textContent = 'Agent 运行中...';
+      sendBtn.disabled = true;
+      pushMessage('user', text);
+      conversation.firstChild.className = 'message user';
+      userInput.value = '';
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_input: text, session_id: state.sessionId })
+        });
+        if (!res.ok) throw new Error(`请求失败：${res.status}`);
+        const data = await res.json();
+        pushMessage('agent', data.output_text || '当前没有返回正文。');
+        renderMeta(data);
+        renderToolOutputs(data.tool_outputs || []);
+        renderReferences(data.references || []);
+        renderArtifacts(data.artifacts || []);
+      } catch (error) {
+        pushMessage('agent', `错误：${error.message || '预览失败'}`);
+      } finally {
+        sendBtn.disabled = false;
+        statusText.textContent = '';
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+    clearBtn.addEventListener('click', () => {
+      conversation.innerHTML = '';
+      meta.innerHTML = '';
+      toolOutputs.innerHTML = '';
+      references.innerHTML = '';
+      artifacts.innerHTML = '';
+      preview.innerHTML = '当前没有选中的文件。';
+      statusText.textContent = '';
+    });
+
+    fetch('/api/artifacts')
+      .then(r => r.json())
+      .then(data => renderArtifacts(data.artifacts || []))
+      .catch(() => {
+        artifacts.innerHTML = '<div class="muted">产物列表加载失败。</div>';
+      });
+  </script>
+</body>
+</html>

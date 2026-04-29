@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime state
+outputs/
+workspace/
+logs/
+*.log
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+secrets.*
+credentials.*
+
+# Project-specific config that may contain local keys
+backend/app/services/rag/server/rag/modular/config/test_credentials.yaml
+backend/app/services/rag/server/rag/modular/config/test_credentials.yml
+backend/app/services/rag/server/rag/modular/config/local*.yaml
+backend/app/services/rag/server/rag/modular/config/local*.yml
+
+# RAG data / indexes / vector stores
+backend/app/services/rag/server/rag/modular/data/
+backend/app/services/rag/server/rag/modular/logs/
+backend/app/services/rag/server/rag/data/
+backend/app/services/rag/server/rag/logs/
+backend/app/services/rag/server/rag/pageindex/output/
+backend/app/services/rag/server/rag/pageindex/data/
+backend/app/services/rag/server/rag/pageindex/logs/
+
+# Generated artifacts and exports
+*.tmp
+*.bak
+*.orig
+*.swp

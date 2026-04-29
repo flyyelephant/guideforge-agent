@@ -1,0 +1,36 @@
+[project]
+name = "unreal-agent-mcp"
+version = "0.1.0"
+description = "MCP server for UnrealAgent - AI control interface for Unreal Editor"
+requires-python = ">=3.10"
+dependencies = [
+    # MCP core
+    "mcp>=1.0.0",
+    "Pillow>=10.0.0",
+    # HTTP server (Slate UI 入口)
+    "fastapi>=0.110.0",
+    "uvicorn>=0.29.0",
+    "sse-starlette>=1.6.0",
+    # RAG engine
+    "zhipuai>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "PyYAML>=6.0",
+    "requests>=2.31.0",
+    "tiktoken>=0.6.0",
+    # MODULAR retrieval runtime
+    "openai>=1.0.0",
+    "chromadb>=0.4.0",
+    "jieba>=0.42",
+    "langchain-text-splitters>=0.3.0",
+    "markitdown[pdf]>=0.1.0",
+]
+
+[project.scripts]
+unreal-agent-mcp = "unreal_agent_mcp.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/unreal_agent_mcp"]

@@ -1,0 +1,12 @@
+{
+  "key": "proposal_generation_skill",
+  "name": "Proposal Generation",
+  "description": "Method guidance for grounded proposal generation.",
+  "task_type": "proposal_generation",
+  "tags": [
+    "workflow",
+    "proposal",
+    "planning"
+  ],
+  "version": "1"
+}

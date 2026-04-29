@@ -1,0 +1,86 @@
+# Visual Studio
+.vs/
+.vsconfig
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+
+# Build artifacts
+*.exe
+*.out
+*.app
+*.ipa
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.obj
+*.o
+*.lo
+*.slo
+*.lai
+*.la
+*.mod
+*.gch
+*.pch
+
+# Unreal generated files
+Binaries/*
+Plugins/**/Binaries/*
+Build/*
+!Build/*/
+Build/*/**
+!Build/*/PakBlacklist*.txt
+!Build/**/*.ico
+Saved/*
+Intermediate/*
+Plugins/**/Intermediate/*
+DerivedDataCache/*
+*_BuiltData.uasset
+
+# Generated project files
+*.xcodeproj
+*.xcworkspace
+
+# Source art
+SourceArt/**/*.png
+SourceArt/**/*.tga
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+
+# Local env / secrets
+.env
+server/.env
+
+# Local test scratch
+server/test_rag.py
+server/rag/docs/raw/
+
+# Knowledge conversion outputs and caches
+knowledge/cpp_source/converted/
+knowledge/ue_docs/converted/
+knowledge/index_cache/
+knowledge/project_assets/
+
+# Local vector store / retrieval caches
+server/rag/modular/data/db/
+server/rag/modular/data/images/
+server/rag/modular/logs/
+
+# Keep original source docs under version control
+# knowledge/ue_docs/raw/

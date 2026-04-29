@@ -1,0 +1,24 @@
+{
+  "FileVersion": 3,
+  "Version": 10008,
+  "VersionName": "1.0.8",
+  "FriendlyName": "xAssistant",
+  "Description": "AI-powered assistant plugin for Unreal Engine with natural language control capabilities. Supports OpenAI and DeepSeek compatible APIs.",
+  "Category": "Editor",
+  "CreatedBy": "",
+  "CreatedByURL": "",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "",
+  "EnabledByDefault": true,
+  "CanContainContent": false,
+  "IsBetaVersion": false,
+  "Installed": true,
+  "Modules": [
+    {
+      "Name": "SmartUEAssistant",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ]
+}

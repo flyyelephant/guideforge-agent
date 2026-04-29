@@ -1,0 +1,12 @@
+{
+  "key": "workflow_support_skill",
+  "name": "Workflow Support",
+  "description": "Method guidance for grounded workflow support.",
+  "task_type": "workflow_support",
+  "tags": [
+    "workflow",
+    "process",
+    "planning"
+  ],
+  "version": "1"
+}

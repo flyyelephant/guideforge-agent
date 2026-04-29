@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"D:/Epic Games/UE_5.7/Engine/Build/BatchFiles/Build.bat\" SmartUEAssistantEditor Development Win64 \"D:/ue-ai/smart_ue_assistant/SmartUEAssistant.uproject\" -waitmutex 2>&1)"
+    ]
+  }
+}

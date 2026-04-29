@@ -1,0 +1,12 @@
+{
+  "key": "tutorial_writing_skill",
+  "name": "Tutorial Writing",
+  "description": "Method guidance for grounded tutorial generation.",
+  "task_type": "tutorial_writing",
+  "tags": [
+    "workflow",
+    "tutorial",
+    "grounded-writing"
+  ],
+  "version": "1"
+}

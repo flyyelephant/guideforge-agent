@@ -1,0 +1,104 @@
+# Unreal RAG Configuration
+
+# Unreal Engine paths
+unreal_engine:
+  engine_path: D:/Epic Games/UE_5.7/Engine
+  source_path: D:/Epic Games/UE_5.7/Engine/Source
+  docs_path: D:/Epic Games/UE_5.7/Engine/Documentation
+
+# Document collection settings
+collection:
+  markdown_extensions:
+    - .md
+    - .markdown
+  udn_extensions:
+    - .udn
+  exclude_patterns:
+    - "*/DerivedDataCache/*"
+    - "*/Intermediate/*"
+
+# PageIndex settings
+pageindex:
+  model: "glm-4-flash"
+  max_pages_per_node: 10
+  max_tokens_per_node: 20000
+  toc_check_pages: 20
+  add_node_id: true
+  add_node_summary: true
+  add_doc_description: true
+
+# Categorization rules
+categorization:
+  coding-standards:
+    - "CodingStandard"
+    - "coding_standard"
+    - "StyleGuide"
+    - "style_guide"
+    - "CONTRIBUTING"
+  
+  api-reference:
+    - "API"
+    - "Reference"
+    - "docs/"
+    - "Documentation/"
+  
+  guides:
+    - "Guide"
+    - "Tutorial"
+    - "HowTo"
+    - "README"
+  
+  debugging:
+    - "Debug"
+    - "Test"
+    - "Error"
+    - "Troubleshoot"
+
+# RAG query settings
+query:
+  max_results: 5
+  min_relevance_score: 0.7
+  context_window: 4000
+
+# Retrieval backend settings
+# Keep UE-aligned source data and MCP tool names unchanged.
+# Only swap the search backend underneath.
+backend:
+  provider: modular
+  modular:
+    repo_root: ../modular
+    settings_path: ../modular/config/settings.yaml
+    docs_collection: ue_docs
+    code_collection: cpp_source
+    assets_collection: project_assets
+    ingestion:
+      # Index the full UE docs raw tree so both markdown exports and original
+      # UDN source docs are available to the docs retriever.
+      docs_input_dir: ../../../knowledge/ue_docs/raw
+      code_input_dir: ../../../knowledge/cpp_source/converted
+      assets_input_dir: ../../../knowledge/project_assets
+
+# Agent settings
+agents:
+  ue_dev_agent:
+    primary_categories:
+      - coding-standards
+      - api-reference
+      - guides
+    temperature: 0.7
+  
+  qa_agent:
+    primary_categories:
+      - debugging
+      - api-reference
+      - guides
+    temperature: 0.3
+
+# 私有索引路径（Phase 5）
+private_index:
+  project_source_path: D:/ue-ai/smart_ue_assistant/Plugins
+  private_docs_path: D:/ue-ai/smart_ue_assistant/docs
+  cpp_output_dir: ../../knowledge/cpp_source/converted
+  docs_output_dir: ../../knowledge/ue_docs/converted
+  cache_file: ../../knowledge/index_cache/.index_cache.json
+  assets_output_dir: ../../knowledge/project_assets
