@@ -1,4 +1,4 @@
-# deerflow-lite-agent
+# guideforge-agent
 
 A lightweight Agent Runtime for developer-center workflows such as tutorial writing, proposal generation, and workflow support.
 
